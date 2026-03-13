@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Pesquisa Personalizada - DocZ</title>
+    <style>
+        /* CSS Base DocZ */
+        html, body { margin: 0; padding: 0; background: #fafafa; font-family: Arial, sans-serif; color: #595959; font-size: 12px; }
+        #termo-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .ui-dialog { background: #585858; padding: 5px; border-radius: 5px; width: 720px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .ui-dialog-titlebar { background: url("https://docz.sosdocs.com.br/Docz/app/images/backgrounds/titleBg.png") repeat-x; height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; border-bottom: 1px solid #cdcdcd; }
+        .ui-dialog-content { background-color: #fafafa; padding: 15px; }
+        
+        .widget { background: #f9f9f9; border: 1px solid #cdcdcd; border-radius: 3px; }
+        .widget .title { height: 36px; background: #efefef url("https://docz.sosdocs.com.br/Docz/app/images/backgrounds/titleBg.png") repeat-x; border-bottom: 1px solid #cdcdcd; display: flex; align-items: center; }
+        .widget .title .titleIcon { padding: 11px; border-right: 1px solid #D5D5D5; margin-right: 10px; }
+        .widget .title h6 { font-weight: bold; margin: 0; }
+
+        #checkboxContainer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        #checkboxContainer label { display: flex; align-items: center; font-size: 11px; cursor: pointer; padding: 2px; }
+        #checkboxContainer input { margin-right: 8px; }
+
+        /* Rodapé com contador apenas em texto */
+        .footer-area { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: 15px; 
+            padding: 0 10px; 
+        }
+        
+        #contador { 
+            font-size: 11px; 
+            color: #777; 
+            font-weight: normal;
+        }
+
+        #contador strong { color: #555; }
+
+        .limit-reached { color: #9f352b !important; font-weight: bold !important; }
+
+        .button { 
+            font-size: 10px; 
+            font-weight: bold; 
+            background-image: url("https://docz.sosdocs.com.br/Docz/app/images/ui/usualButtons.png"); 
+            background-repeat: repeat-x; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            padding: 7px 25px; 
+            border-radius: 2px; 
+            color: #fff; 
+            border: 1px solid #7ca82a; 
+            background-position: 0 -425px; 
+        }
+        
+        .button:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+<div id="termo-backdrop">
+    <div class="ui-dialog">
+        <div class="ui-dialog-titlebar">
+            <span class="ui-dialog-title" style="font-weight: bold; color: #595959;">Ampliar e customizar busca</span>
+            <span style="cursor:pointer">✖</span>
+        </div>
+
+        <div class="ui-dialog-content">
+            <div class="widget">
+                <div class="title">
+                    <img src="https://docz.sosdocs.com.br/Docz/app/images/icons/dark/list.png" class="titleIcon">
+                    <h6>Pesquisa Personalizada</h6>
+                </div>
+
+                <fieldset style="border: 1px solid #ccc; padding: 15px; margin: 10px;">
+                    <div id="checkboxContainer">
+                        <label><input type="checkbox" class="chk-item" checked disabled> Identificador SOS</label>
+                        <label><input type="checkbox" class="chk-item" checked disabled> Identificador Cliente</label>
+                        <label><input type="checkbox" class="chk-item" checked disabled> Nº Anterior</label>
+
+                        <label><input type="checkbox" class="chk-item"> Localização</label>
+                        <label><input type="checkbox" class="chk-item"> Status</label>
+                        <label><input type="checkbox" class="chk-item"> Serviço</label>
+                        <label><input type="checkbox" class="chk-item"> Descrição</label>
+                        <label><input type="checkbox" class="chk-item"> Departamento</label>
+                        <label><input type="checkbox" class="chk-item"> Tipo Objeto</label>
+                        <label><input type="checkbox" class="chk-item"> Lacre 01</label>
+                        <label><input type="checkbox" class="chk-item"> Lacre 02</label>
+                        <label><input type="checkbox" class="chk-item"> Nº Concorrente</label>
+                        <label><input type="checkbox" class="chk-item"> Classificação</label>
+                        <label><input type="checkbox" class="chk-item"> Fase Corrente</label>
+                        <label><input type="checkbox" class="chk-item"> Fase Intermediaria</label>
+                        <label><input type="checkbox" class="chk-item"> Destinação Final</label>
+                        <label><input type="checkbox" class="chk-item"> Sigilo Associado</label>
+                        <label><input type="checkbox" class="chk-item"> Observação da Classe</label>
+                        <label><input type="checkbox" class="chk-item"> Status Gestão Documental</label>
+                        <label><input type="checkbox" class="chk-item"> Nº Solicitação</label>
+                        <label><input type="checkbox" class="chk-item"> Usuário</label>
+                        <label><input type="checkbox" class="chk-item"> Etapa Documental</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="footer-area">
+                <div id="contador">Selecionados: <strong>3</strong> de <strong>10</strong></div>
+                <button id="btnSalvar" class="button">SALVAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const checkboxes = document.querySelectorAll('.chk-item');
+    const contadorTexto = document.getElementById('contador');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const MAX_SELECTION = 10;
+
+    function atualizarContador() {
+        const selecionados = document.querySelectorAll('.chk-item:checked').length;
+        contadorTexto.innerHTML = `Selecionados: <strong>${selecionados}</strong> de <strong>${MAX_SELECTION}</strong>`;
+
+        if (selecionados > MAX_SELECTION) {
+            contadorTexto.classList.add('limit-reached');
+            btnSalvar.disabled = true;
+        } else {
+            contadorTexto.classList.remove('limit-reached');
+            btnSalvar.disabled = false;
+        }
+    }
+
+    checkboxes.forEach(chk => {
+        chk.addEventListener('change', () => {
+            const selecionados = document.querySelectorAll('.chk-item:checked').length;
+            
+            if (selecionados > MAX_SELECTION) {
+                alert("Limite atingido! Você pode selecionar no máximo 10 campos.");
+                chk.checked = false; // Desmarca automaticamente o que excedeu
+            }
+            atualizarContador();
+        });
+    });
+</script>
+
+</body>
+</html>
