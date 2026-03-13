@@ -20,7 +20,7 @@
 
         .ui-dialog {
             background: #585858; padding: 5px; border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5); width: 620px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); width: 650px; /* Largura levemente maior para os botões */
         }
 
         .ui-dialog-titlebar {
@@ -33,7 +33,7 @@
 
         #dialogPesquisaLote {
             position: relative; padding: 10px 12px; background: #FAFAFA; 
-            clear: both; height: 360px; overflow: hidden;
+            clear: both; min-height: 343px; overflow: hidden;
         }
 
         .widget { background: #f9f9f9; border: 1px solid #cdcdcd; border-radius: 3px; box-shadow: 0 1px 0 #fff; margin-bottom: 10px; }
@@ -46,19 +46,21 @@
         .widget .title .titleIcon { padding: 11px; border-right: 1px solid #D5D5D5; margin-right: 10px; }
         .widget .title h6 { font-weight: bold; margin: 0; font-size: 11px; }
 
-        .active-fields-bar {
+        /* ===== BARRA DE CAMPOS ATIVOS ===== */
+        #activeFieldsBar {
             background: #fff; border-bottom: 1px solid #e2e2e2;
             padding: 10px 12px; text-align: center;
+            display: none;
         }
-        .active-fields-bar span { font-size: 10px; color: #666; text-transform: uppercase; font-weight: bold; }
-        .active-fields-bar i { font-style: normal; color: #ccc; margin: 0 8px; }
+        #activeFieldsBar span { font-size: 10px; color: #666; text-transform: uppercase; font-weight: bold; }
+        #activeFieldsBar i { font-style: normal; color: #ccc; margin: 0 10px; font-size: 12px; vertical-align: middle; }
 
         .formRow { padding: 8px; clear: both; border-bottom: 1px solid #E2E2E2; position: relative; }
 
         input[type=text] {
             font-size: 11px; padding: 7px 10px; background: white; border: 1px solid #DDD;
-            width: 96%; font-family: Arial, sans-serif; box-shadow: 0 0 0 2px #f4f4f4;
-            color: #656565; margin: 5px auto; display: block; box-sizing: border-box;
+            width: 97%; display: block; margin: 5px auto; box-shadow: 0 0 0 2px #f4f4f4;
+            color: #656565; box-sizing: border-box;
         }
 
         .scroll-container { overflow-y: auto; max-height: 160px; background: #fff; }
@@ -71,42 +73,21 @@
         .sTable thead td:first-child { border-left: none; }
         .sTable tbody td { padding: 6px; border-bottom: 1px solid #eee; text-align: center; font-size: 11px; color: #666; }
 
-        /* ===== AJUSTE DO BOTÃO PESQUISAR ===== */
-        .footer-btn { 
-            padding: 12px 0 5px 0; 
-            border-top: 1px solid #E2E2E2; 
-            margin-top: 5px;
-        }
+        /* ===== RODAPÉ COM BOTÕES ===== */
+        .footer-btn { padding: 12px 0 5px 0; border-top: 1px solid #E2E2E2; margin-top: 5px; }
 
         .button {
-            font-size: 10px; 
-            font-weight: bold; 
-            text-transform: uppercase;
+            font-size: 10px; font-weight: bold; text-transform: uppercase;
             background-image: url("https://docz.sosdocs.com.br/Docz/app/images/ui/usualButtons.png");
-            background-repeat: repeat-x; 
-            cursor: pointer; 
-            display: inline-block;
-            border-radius: 2px;
-            color: #fff; 
-            text-decoration: none;
-            line-height: 12px;
-            height: 28px; /* Altura fixa para alinhar com o padrão DocZ */
+            background-repeat: repeat-x; cursor: pointer; display: inline-block;
+            border-radius: 2px; color: #fff; text-decoration: none;
+            line-height: 12px; height: 28px;
+            margin-left: 6px;
         }
+        .button span { padding: 8px 15px; display: block; text-align: center; }
 
-        .greenB { 
-            background-position: 0 -425px; 
-            border: 1px solid #7ca82a; 
-        }
-
-        .button span { 
-            padding: 8px 25px; 
-            display: block; 
-            text-align: center;
-        }
-
-        .button:hover {
-            opacity: 0.9;
-        }
+        .greenB { background-position: 0 -425px; border: 1px solid #7ca82a; }
+        .blueB { background-position: 0 -85px; border: 1px solid #3672a0; color: #fff; }
 
         .btnExcluir { color: #9f352b; cursor: pointer; font-weight: bold; font-size: 14px; }
         .clear { clear: both; }
@@ -128,16 +109,16 @@
                     <h6>Pesquisa por chave</h6>
                 </div>
 
-                <div class="active-fields-bar">
-                    <span>Identificador SOS</span><i>|</i>
-                    <span>Identificador Cliente</span><i>|</i>
-                    <span>Nº Anterior</span><i>|</i>
-                    <span>Localização</span><i>|</i>
-                    <span>Status</span><i>|</i>
-                    <span>Serviço</span><i>|</i>
-                    <span>Descrição</span><i>|</i>
-                    <span>Departamento</span><i>|</i>
-                    <span>Tipo Objeto</span><i>|</i>
+                <div id="activeFieldsBar">
+                    <span>Identificador SOS</span><i>•</i>
+                    <span>Identificador Cliente</span><i>•</i>
+                    <span>Nº Anterior</span><i>•</i>
+                    <span>Localização</span><i>•</i>
+                    <span>Status</span><i>•</i>
+                    <span>Serviço</span><i>•</i>
+                    <span>Descrição</span><i>•</i>
+                    <span>Departamento</span><i>•</i>
+                    <span>Tipo Objeto</span><i>•</i>
                     <span>Lacre 01</span>
                 </div>
 
@@ -160,6 +141,9 @@
 
             <div class="footer-btn">
                 <div style="float: right;">
+                    <a href="javascript:void(0)" class="button blueB" onclick="toggleFields()">
+                        <span id="txtToggle">Ver campos selecionados</span>
+                    </a>
                     <a id="btnPesquisarEmLote" href="javascript:void(0)" class="button greenB">
                         <span>Pesquisar</span>
                     </a>
@@ -173,6 +157,18 @@
 <script>
     const input = document.getElementById('idPEL');
     const lista = document.getElementById('lista_pel');
+    const bar = document.getElementById('activeFieldsBar');
+    const txtToggle = document.getElementById('txtToggle');
+
+    function toggleFields() {
+        if (bar.style.display === 'block') {
+            bar.style.display = 'none';
+            txtToggle.innerText = 'Ver campos selecionados';
+        } else {
+            bar.style.display = 'block';
+            txtToggle.innerText = 'Esconder campos selecionados';
+        }
+    }
 
     input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && this.value.trim() !== '') {
