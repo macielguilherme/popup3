@@ -20,7 +20,7 @@
 
         .ui-dialog {
             background: #585858; padding: 5px; border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5); width: 650px; /* Largura levemente maior para os botões */
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); width: 650px;
         }
 
         .ui-dialog-titlebar {
@@ -50,7 +50,7 @@
         #activeFieldsBar {
             background: #fff; border-bottom: 1px solid #e2e2e2;
             padding: 10px 12px; text-align: center;
-            display: none;
+            display: block;
         }
         #activeFieldsBar span { font-size: 10px; color: #666; text-transform: uppercase; font-weight: bold; }
         #activeFieldsBar i { font-style: normal; color: #ccc; margin: 0 10px; font-size: 12px; vertical-align: middle; }
@@ -91,6 +91,21 @@
 
         .btnExcluir { color: #9f352b; cursor: pointer; font-weight: bold; font-size: 14px; }
         .clear { clear: both; }
+        
+        .info-helper {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+            margin-bottom: 5px;
+            text-align: left;
+            padding-left: 5px;
+        }
+        .info-helper i {
+            font-style: normal;
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -106,7 +121,7 @@
             <div class="widget">
                 <div class="title">
                     <img src="https://docz.sosdocs.com.br/Docz/app/images/icons/dark/list.png" class="titleIcon">
-                    <h6>Pesquisa por chave</h6>
+                    <h6>Pesquisa por Metadados</h6>
                 </div>
 
                 <div id="activeFieldsBar">
@@ -123,7 +138,10 @@
                 </div>
 
                 <div class="formRow">
-                    <input id="idPEL" type="text" placeholder="informe ou cole os dados aqui e pressione enter para adicionar na lista">
+                    <input id="idPEL" type="text" placeholder="Digite ou cole vários valores separados por espaço">
+                    <div class="info-helper">
+                        <i>Dica:</i> Use espaço para separar múltiplos itens
+                    </div>
                 </div>
 
                 <div class="scroll-container">
@@ -141,9 +159,6 @@
 
             <div class="footer-btn">
                 <div style="float: right;">
-                    <a href="javascript:void(0)" class="button blueB" onclick="toggleFields()">
-                        <span id="txtToggle">Ver campos selecionados</span>
-                    </a>
                     <a id="btnPesquisarEmLote" href="javascript:void(0)" class="button greenB">
                         <span>Pesquisar</span>
                     </a>
@@ -157,29 +172,39 @@
 <script>
     const input = document.getElementById('idPEL');
     const lista = document.getElementById('lista_pel');
-    const bar = document.getElementById('activeFieldsBar');
-    const txtToggle = document.getElementById('txtToggle');
 
-    function toggleFields() {
-        if (bar.style.display === 'block') {
-            bar.style.display = 'none';
-            txtToggle.innerText = 'Ver campos selecionados';
-        } else {
-            bar.style.display = 'block';
-            txtToggle.innerText = 'Esconder campos selecionados';
-        }
+    function adicionarItens(valores) {
+        // Divide a string por espaços e remove itens vazios
+        const itens = valores.split(/\s+/).filter(item => item.trim() !== '');
+        
+        // Adiciona cada item como uma linha separada
+        itens.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.trim()}</td>
+                <td><span class="btnExcluir" onclick="this.parentElement.parentElement.remove()">✖</span></td>
+            `;
+            lista.prepend(tr);
+        });
     }
 
     input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && this.value.trim() !== '') {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${this.value.trim()}</td>
-                <td><span class="btnExcluir" onclick="this.parentElement.parentElement.remove()">✖</span></td>
-            `;
-            lista.prepend(tr);
-            this.value = '';
+            adicionarItens(this.value);
+            this.value = ''; // Limpa o campo após adicionar
         }
+    });
+
+    // Opcional: Suporte para colar múltiplos itens com espaço
+    input.addEventListener('paste', function(e) {
+        // Deixa o evento padrão acontecer primeiro
+        setTimeout(() => {
+            if (this.value.trim() !== '') {
+                // Se colou algo, processa automaticamente
+                adicionarItens(this.value);
+                this.value = '';
+            }
+        }, 10);
     });
 </script>
 
